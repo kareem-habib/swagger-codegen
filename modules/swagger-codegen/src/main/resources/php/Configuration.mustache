@@ -102,6 +102,13 @@ class Configuration
     protected $tempFolderPath;
 
     /**
+     * The mock responses root
+     *
+     * @var string
+     */
+    protected $mockResponsesRoot = 'mock-responses';
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -419,4 +426,23 @@ class Configuration
 
         return $keyWithPrefix;
     }
+
+    /**
+     * @return string
+     */
+    public function getMockResponsesRoot()
+    {
+        return $this->mockResponsesRoot;
+    }
+
+    /**
+     * @param string $mockResponsesRoot
+     * @return $this
+     */
+    public function setMockResponsesRoot($mockResponsesRoot)
+    {
+        $this->mockResponsesRoot = $mockResponsesRoot;
+        return $this;
+    }
+
 }

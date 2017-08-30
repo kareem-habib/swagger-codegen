@@ -21,6 +21,9 @@ namespace {{invokerPackage}};
 use \{{invokerPackage}}\Configuration;
 use \{{invokerPackage}}\ApiException;
 use \{{invokerPackage}}\ObjectSerializer;
+use \{{invokerPackage}}\ModelValidator;
+use \{{invokerPackage}}\ClientFactory;
+use \{{apiPackage}}\{{classname}};
 
 /**
  * {{classname}}Test Class Doc Comment
@@ -32,6 +35,27 @@ use \{{invokerPackage}}\ObjectSerializer;
  */
 {{#operations}}class {{classname}}Test extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Model Validator
+     *
+     * @var  ModelValidator
+     */
+    protected $modelValidator;
+
+    /**
+     * Client Factory
+     *
+     * @var  ClientFactory
+     */
+    protected $clientFactory;
+
+
+    /**
+     * Configuration of this test
+     *
+     * @var  Configuration
+     */
+    protected $config;
 
     /**
      * Setup before running any test cases
@@ -45,6 +69,12 @@ use \{{invokerPackage}}\ObjectSerializer;
      */
     public function setUp()
     {
+        // Setup configuration of this test class
+        $this->config = new Configuration();
+        $this->config->setMockResponsesRoot('mock-responses');
+
+        $this->modelValidator = new modelValidator();
+        $this->clientFactory = new ClientFactory($this->config);
     }
 
     /**
@@ -70,6 +100,18 @@ use \{{invokerPackage}}\ObjectSerializer;
      */
     public function test{{vendorExtensions.x-testOperationId}}()
     {
+        // Construct an API Object (shouldn't this be shared?)
+        $api = new {{classname}}($this->clientFactory->createClientInterface());
+
+        // Add vars here
+        parse_str('', $vars);
+
+        // Invoke Api
+        $object = $api->{{vendorExtensions.x-testOperationId}}(array_values($vars)); //Dynamic
+
+        //recursively call valid() on $object;
+        $isValid = $this->modelValidator->validateRecursively($object);
+        $this->assertTrue($isValid); 
     }
     {{/operation}}
 }

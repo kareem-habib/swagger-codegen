@@ -27,6 +27,7 @@ use {{invokerPackage}}\ApiException;
 use {{invokerPackage}}\Configuration;
 use {{invokerPackage}}\HeaderSelector;
 use {{invokerPackage}}\ObjectSerializer;
+use {{invokerPackage}}\ExtendedRequest;
 
 /**
  * {{classname}} Class Doc Comment
@@ -262,7 +263,7 @@ use {{invokerPackage}}\ObjectSerializer;
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function {{operationId}}Request({{#allParams}}${{paramName}}{{^required}} = {{#defaultValue}}'{{{.}}}'{{/defaultValue}}{{^defaultValue}}null{{/defaultValue}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+    protected function {{operationId}}Request({{#allParams}}${{paramName}}{{^required}} = {{#defaultValue}}'{{{.}}}'{{/defaultValue}}{{^defaultValue}}null{{/defaultValue}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}, $expectedResponseCode)
     {
         {{#allParams}}
         {{#required}}
@@ -443,12 +444,21 @@ use {{invokerPackage}}\ObjectSerializer;
             $headers
         );
 
-        return new Request(
+        // Array of response codes for this operation
+        $responseCodes[] = [];
+        {{#responses}}
+        $responseCodes[] = '{{code}}';
+        {{/responses}}
+
+        return ExtendedRequest(
             '{{httpMethod}}',
             $url,
             $headers,
             $httpBody
-        );
+        )
+        .setResourcePath('{{{path}}}')
+        .setResponseCodesExpected($responseCodes)
+        .setBaseName({{baseName}});
     }
 
     {{/operation}}
